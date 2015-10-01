@@ -1,0 +1,6 @@
+IRCNICK=n0use
+IRCNAME="n0 fucking use" 
+IRCUSER=n0use
+#IRCHOST - hostname (you will probably never use this one)
+
+export IRCNICK IRCNAME IRCUSER

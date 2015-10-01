@@ -1,0 +1,166 @@
+set mbox_type=Maildir
+
+set folder="~/Maildir"
+set mask="!^\\.[^.]"
+set mbox="~/Maildir"
+set spoolfile="~/Maildir"
+
+
+#set spoolfile="~/Maildir/"
+#set folder="~/Maildir/"
+set mask=".*"    # the default mask hides dotfiles and maildirs are dotfiles now.
+ # set mask="!^\.[^.]"  # this line intentionally commented out
+set record="+.Sent"
+set postponed="+.Drafts"
+
+#mailboxes + "+.Archive" "+.Deleted Messages" "+.Drafts" "+.SIP" "+.SPAM" "+.Sent" "+.Sent Messages" "+.Sent.old" "+.Spam" "+.Trash" "+.apple" "+.archive" "+.bugtraq" "+.cpunks" "+.crap" "+.creditjunk" "+.critical" "+.cron" "+.daemon" "+.freebsd" "+.freecode" "+.fulldisclosure" "+.google" "+.ifthis" "+.linkedin" "+.meetup" "+.nanog" "+.notes" "+.presort" "+.prespam" "+.redhat" "+.subnet88"
+
+
+#mailboxes ! + `\
+#for file in ~/Maildir/.*; do \
+#   box=$(basename "$file"); \
+#   if [ ! "$box" = '.' -a ! "$box" = '..' -a ! "$box" = '.customflags' \
+#       -a ! "$box" = '.subscriptions' ]; then \
+#     echo -n "\"+$box\" "; \
+#   fi; \
+#done`
+
+macro index c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+macro pager c "<change-folder>?<toggle-mailboxes>" "open a different folder"
+
+macro index C "<copy-message>?<toggle-mailboxes>" "copy a message to a mailbox"
+macro index M "<save-message>?<toggle-mailboxes>" "move a message to a mailbox"
+
+#set spoolfile="imap://jnn@synfin.org/INBOX"
+#set imap_check_subscribed=yes
+#set imap_list_subscribed=yes
+#set imap_login=jnn
+
+set hostname=synfin.org
+
+set hdrs				# add my_hdr lines
+#set alias_file=~/.muttrc.aliases     # Keep aliases in this file.
+#source ~/.muttrc.aliases             # And read them in.
+set allow_8bit				# leave all the bits alone :)
+set postpone=ask-no                     # Ask about postponing.
+set postponed=+postponed                # Where postponed messages live.
+set print=ask-yes                       # Ask before printing.
+set delete=yes				# Just Do It
+set move=ask-yes
+set include=yes                         # Include the message in replies.
+set edit_hdrs                           # I want to edit the message headers.
+set editor="vim"			# Use my script to run htag and
+					# then vim
+set nomark_old                          # Don't mark unread new msgs as old.
+#set mbox=+mbox                          # Where my mailbox lives.
+set copy=yes                            # Keep copies of outgoing mail...
+set record=+Sent                        # ... and it gets saved in =outbox.
+set pager_stop                          # Don't skip msgs on next page.
+set pager_index_lines=1                 # Start off with index footer in pager.
+                                        # Where to find the mailcap.
+set nowrite_bcc
+
+# Default color definitions
+color   hdrdefault  black       cyan
+color   quoted      brightred   white
+color   signature   magenta     white
+color   indicator   brightwhite red
+color   attachment  black       white
+color   error       red     white
+color   message     black       white
+color   search      brightwhite magenta
+color   status      brightyellow    blue
+color   tree        red     white
+color   normal      black       white
+color   tilde       green       white
+color   bold        brightyellow    white
+color  underline   magenta     white
+color   markers     red     white
+
+# Colour definitions when on a mono screen
+mono bold      bold
+mono underline underline
+mono indicator reverse
+
+# Colours for items in the reader
+color header black cyan ".*:"
+color header brightwhite cyan "^(From|Subject):"
+mono  header bold             "^(From|Subject):"
+
+# Colours for items in the index
+color index brightblue  white ~N
+# Hmm, don't like this.
+#color index brightgreen black "~N (~x byers.world)|(~x byers.x)|(~x langly.levallois123.axialys.net)|(~x the.earth.li)"
+color index red         white ~F
+color index black       green ~T
+color index brightwhite white ~D
+mono  index bold              ~N
+mono  index bold              ~F
+mono  index bold              ~T
+mono  index bold              ~D
+
+# Misc Highlights in index
+color index brightgreen white "synfin.org"
+color index brightgreen white "daemon.synfin.org"
+
+
+# Highlights inside the body of a message.
+
+# URLs
+color body brightblue  white "(https|hkp|ssh|http|ftp|sftp|news|telnet|finger)://[^ \"\t\r\n]*"
+color body brightblue  white "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+mono  body bold              "(http|ftp|news|telnet|finger)://[^ \"\t\r\n]*"
+mono  body bold              "mailto:[-a-z_0-9.]+@[-a-z_0-9.]+"
+
+# email addresses
+color body brightblue  white "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+mono  body bold              "[-a-z_0-9.%$]+@[-a-z_0-9.]+\\.[-a-z][-a-z]+"
+
+# Various smilies and the like
+color body brightgreen black "<[Ee]?[Bb]?[Gg]>"     # <g>
+color body brightgreen black "<[Bb][Gg]>"       # <bg>
+color body brightgreen black " [;:]-*[)>(<|]"       # :-) et
+
+# PGP/gnupg settings
+
+set crypt_use_gpgme = yes
+
+# Sign replies to signed email
+set crypt_replysign = yes
+
+# Encrypt replies to encrypted email
+set crypt_replyencrypt = yes
+
+# Encrypt and sign replies to encrypted and signed email
+set crypt_replysignencrypted = yes
+
+# Attempt to verify email signatures automatically
+set crypt_verify_sig = yes
+
+# automatically sign all outgoing messages
+set crypt_autosign = yes
+
+set pgp_use_gpg_agent = yes
+set pgp_sign_as = D47A78C7
+set pgp_timeout = 3600
+set pgp_autosign = yes
+set pgp_replyencrypt = no
+set pgp_replysign = yes
+set pgp_replysignencrypted = no
+set pgp_strict_enc = yes
+set pgp_verify_sig = yes
+set pgp_auto_decode = yes
+#
+source ~/.muttrc.gpg
+
+source ~/.muttrc.keys
+source ~/.muttrc.spam
+
+#mailboxes `echo -n "+ "; gfind ~/Maildir -maxdepth 1 -type d -name ".*" -printf "+'%f' | grep -v evernote "`
+mailboxes `echo -n "+ "; gfind ~/Maildir -maxdepth 1 \( -regex '.*evernote.*' \) -prune -o -type d -name ".*" -printf "+'%f' "`
+unmailboxes cur new tmp courierimapsubscribed courierimapuiddb courierimaphieracl courierimapkeywords
+
+set ascii_chars = yes
+set collapse_unread = no
+set sort=threads
+set sort_aux=date-received
