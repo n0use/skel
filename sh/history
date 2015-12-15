@@ -1,0 +1,23 @@
+# Allows an NFS mounted home directory across multiple machines to keep separate bash history files, based on machine name
+# and session time (so that even on the same machine, multiple invocations of bash will keep a separate history file)
+# All history files stored under ~/.history/
+#
+# Part of John Newman's <jnn@synfin.org> start-up scripts for bash... please take it and use it as you like :)
+
+if [ ! -d ~/.history ] ; then
+    mkdir ~/.history
+fi
+
+HISTCONTROL=ignoredups
+
+shopt -s histappend 
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+
+_host=$(hostname | awk -F. '{ print $1 }')               
+_date=$(date '+%m-%d-%y-%s')
+
+HISTFILE=~/.history/bash-history-$_
+HISTFILE=~/.history/bash-history-${_host}-${_date}
+
+HISTFILESIZE=10000
+HISTSIZE=10000
