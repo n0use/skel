@@ -1,0 +1,5 @@
+macro index \ed "<enter-command>unset wait_key\n<pipe-entry>sa-learn --spam\n<enter-command>set wait_key\n<save-message>~/Maildir/.SPAM/" "Tags as SPAM"
+
+macro index \eu "<pipe-entry>sa-learn --ham\n<enter-command>set wait_key\n<save-message>=inbox\n" "Untags as SPAM"
+
+macro index \et "<pipe-entry>spamc -c\n<enter-command>set wait_key\n" "Tests if it is SPAM"
