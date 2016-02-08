@@ -122,8 +122,9 @@ color body brightgreen black "<[Bb][Gg]>"       # <bg>
 color body brightgreen black " [;:]-*[)>(<|]"       # :-) et
 
 # PGP/gnupg settings
+source ~/.muttrc.gpg2
 
-set crypt_use_gpgme = yes
+set crypt_use_gpgme = no
 
 # Sign replies to signed email
 set crypt_replysign = yes
@@ -140,6 +141,8 @@ set crypt_verify_sig = yes
 # automatically sign all outgoing messages
 set crypt_autosign = yes
 
+set pgp_verify_command="gpg2 --no-verbose --batch --output - --verify %s %f"
+
 set pgp_use_gpg_agent = yes
 set pgp_sign_as = D47A78C7
 set pgp_timeout = 3600
@@ -151,7 +154,6 @@ set pgp_strict_enc = yes
 set pgp_verify_sig = yes
 set pgp_auto_decode = yes
 #
-source ~/.muttrc.gpg
 
 source ~/.muttrc.keys
 source ~/.muttrc.spam
