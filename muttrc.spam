@@ -1,3 +1,5 @@
+# this file to be sourced by main ~/.muttrc -  John Newman 2/08/2016
+
 macro index \ed "<enter-command>unset wait_key\n<pipe-entry>sa-learn --spam\n<enter-command>set wait_key\n<save-message>~/Maildir/.SPAM/" "Tags as SPAM"
 
 macro index \eu "<pipe-entry>sa-learn --ham\n<enter-command>set wait_key\n<save-message>=inbox\n" "Untags as SPAM"
