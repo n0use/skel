@@ -1,0 +1,52 @@
+# .bash_conf - convenience functions for bash scripts to load/store config values
+# last update 02/12/2016 - added write_conf() function, which can create or update config files
+#
+# all code by John Newman <jnn@synfin.org>
+
+# if you make a change and want to reload this, unset _GET_CONF_LOADED
+#if [ "$_GET_CONF_LOADED" != "YES" ] ; then
+    CONF_DIR="$HOME/etc"
+    
+    function get_conf()
+    {
+        prog=$1
+        setting=$2
+    
+        if [ -z "$prog" ]  || [ -z "$setting" ] ; then
+            echo "" ; return 0
+        fi
+    
+        prog_cf="${CONF_DIR}/${prog}.conf"
+    
+        if [ ! -f "${prog_cf}" ] ; then
+            echo "" ; return 0
+        fi
+    
+        cat $prog_cf | awk -F= "/^ *$setting */ { print \$2 }" | sed 's/^ *//' | sed 's/ *$//'
+    }
+
+    function write_conf() 
+    {
+        prog=$1
+        setting=$2
+        value=$3
+    
+        if [ -z "$prog" ]  || [ -z "$setting" ] || [ -z "${value}" ] ; then
+            echo "Usage: write_conf prog setting value" ; return 1
+        fi
+    
+        prog_cf="${CONF_DIR}/${prog}.conf"
+        setting_str="${setting}=${value}"
+    
+        if [ ! -f "${prog_cf}" ] ; then
+            echo "${setting}=${value}" >> "${prog_cf}"
+        else
+            tmp_prog_cf="$(basename "${prog_cf}").$$"
+            cat $prog_cf | sed "/^ *$setting */d" > "${tmp_prog_cf}"
+            echo "${setting}=${value}" >> "${tmp_prog_cf}"
+            mv "${tmp_prog_cf}" "${prog_cf}"
+        fi
+    }
+
+    export _GET_CONF_LOADED="YES"
+#fi
