@@ -2,6 +2,9 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+export _NIX=$(uname | tr A-Z a-z)
+
+test -f ~/.bash_conf && source ~/.bash_conf
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -81,20 +84,31 @@ fi
 
 #
 # jnn mods below
-w
 
+# These overwrite ALL the PS1 settings from earlier in the file.... needs cleanup, obviously
+#
 #export PS1='\[\e]0;\w\a\]\[\e[32m\]\u@\h:\[\e[36m\]\w\[\e[1m\]\$ \[\e[0m\]'
 #export PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w \$ \[\033[00m\]'
-export  PS1='\[\033[01;37m\]\u\[\033[01;37m\]@\[\033[01;37m\]\h\[\033[01;36m\] \w \$ \[\033[00m\]'
+#export PS1='\[\033[01;37m\]\u\[\033[01;37m\]@\[\033[01;37m\]\h\[\033[01;36m\] \w \$ \[\033[00m\]'
+export PS1='\[\033[01;34m\]\u\[\033[01;36m\]@\[\033[01;34m\]\h\[\033[01;36m\] \w \$ \[\033[00m\]'
+
 export PROMPT_DIRTRIM=3
 
-for f in ~/sh/* ; do 
-    if [[ "${f}" =~ ".disabled" ]] ; then
-        #echo "skipping ${f}.."
-        continue
-    fi
-	test -f "${f}" && source "${f}" 
-done
+function _load_sh()
+{
+    dir="$1"
+#    for f in ~/sh/* ; do 
+    for f in "${dir}/"* ; do 
+        if [[ "${f}" =~ ".disabled" ]] ; then
+            #echo "skipping ${f}.."
+            continue
+        fi
+    	test -f "${f}" && source "${f}" 
+    done
+}
+
+_load_sh "${HOME}/sh"
+_load_sh "${HOME}/sh/${_NIX}"
 
 if [[ "$TERM" != "vt100" ]] ; then
     set -o vi
@@ -106,4 +120,5 @@ export LESSOPEN
 # Make sure our imapfilter daemon is runnign to sort email. 
 ~/bin/imapfilter.sh
 
-stty erase ^H
+stty erase ^?
+stty erase2 ^H
