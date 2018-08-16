@@ -1,8 +1,19 @@
-alias l.='ls -d .* -G'
-alias la='ls -latr -G'
-alias ll='ls -ltr -G'
-alias ls='ls -G'
-alias lr='ls -G -ltrR'
+OS=$(uname)
+
+if [ "${OS}" = "Linux" ] ; then
+    alias cgrep='grep --color=always'
+    alias l.='ls -d .* --color=auto'
+    alias la='ls -latr --color=auto'
+    alias ll='ls -ltr --color=auto'
+    alias ls='ls --color=auto'
+    alias lr='ls --color=auto -ltrR'
+elif [ "${OS}" = "FreeBSD" -o "${OS}" = "Darwin" ] ; then
+    alias l.='ls -d .* -G'
+    alias la='ls -latr -G'
+    alias ll='ls -ltr -G'
+    alias ls='ls -G'
+    alias lr='ls -G -ltrR'
+fi
 
 alias pps='ps axwo ppid,pid,tty,user,group,%cpu,%mem,args'
 alias lhost='[ -n "$1" ] && grep $1 /etc/hosts || echo Usage: lhost host'
@@ -21,6 +32,5 @@ export SVN_EDITOR=vim
 export PAGER=less
 
 alias vi=vim
-alias cgrep='grep --color=always'
 
 # vim:ft=sh:ts=4:sts=4:ai:et:
