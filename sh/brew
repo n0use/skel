@@ -1,5 +1,0 @@
-alias bs='brew search $*'
-
-alias bsinfo='brew info $*'
-
-

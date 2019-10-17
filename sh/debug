@@ -1,8 +1,0 @@
-DEBUG=0
-
-
-function dprint()
-{
-    [[ "$DEBUG" == "1" ]] && echo $*
-}
-
