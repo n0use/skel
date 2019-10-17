@@ -6,5 +6,5 @@ function w2()
                 src = "tmux"; 
             for ( i = 6; i <= NF ; i++ )   
                 cmd = sprintf("%s %s", cmd, $i);  
-            printf("%s\t%s\t%s\t%s\n", u, src, d1, cmd) ;  }' |  ${dedup} -c
+            printf("%s\t%s\t%s\t%s\n", u, src, d1, cmd) ;  }' | ${dedup} -c
 }

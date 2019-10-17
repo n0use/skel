@@ -1,3 +1,4 @@
+
 pass () 
 { 
     user=$1;
@@ -30,19 +31,26 @@ pass ()
     gpg -d ${HOME}/etc/pass/password-${user}.txt.gpg > /tmp/p.$$ && cat /tmp/p.$$ && rm -f /tmp/p.$$
 }
 
+
 newpass ()
 {
-    pass=$1;
-    if [ -z "${pass}" ] ; then
-        echo "Usage: newpass name-of-pass";
-        echo " After it launches type in the encrypted password info you want to store, as many lines as you want,";
-        return 1;
+    replace=0
+    if [[ "$1" == "-r" ]] ; then 
+        replace=1
+        shift
     fi
+    pass=$1
     pass_file="${HOME}/etc/pass/password-${pass}.txt"
 
     if [ -f "${pass_file}" ] || [ -f "${pass_file}.gpg" ] ; then
-        echo "There is already a password stored for this - remove the old one and try again."
-        return 1
+        if [[ "${replace}" == 0 ]] ; then
+            echo "There is already a password stored for this - remove the old one and try again."
+            return 1
+        fi
+        echo -n "Are you sure you want to REPLACE the information you already have stored for '$pass'? [Ny] "
+        read yesno
+        [[ yesno =~ [yY] ]] || return 1
+        rm -f "${pass_file}" "${pass_file}.gpg"
     fi
     echo "Enter the information to store in the encrypted file for \"${pass}\""
     cnt=0
@@ -54,58 +62,15 @@ newpass ()
     for ((i=0;i<${cnt};i++)) do
         echo "${input[${i}]}" >> "${pass_file}"
     done
-    gpg -e "${pass_file}"
+    gpg -r jnn@synfin.org -e "${pass_file}" 
     rm "${pass_file}"
 }
 
-rmpass()
-{
-    pass=$1;
-    pass_file="${HOME}/etc/pass/password-${pass}.txt.gpg";
-    if [ ! -f "${pass_file}" ] ; then
-        echo -e "There is no stored encrypted password for ${pass}\n - the file would be \"${pass_file}\"\n\nSKIPPING DELETION - it DOESNT EXIST!";
-        return 1
-    fi
-    
-    echo -en "Are you sure you want to erase the $1 password file?\n -  stored in \"$pass_file\"? [yN] ";
-    read yesno;
-    if [[ "${yesno}" =~ ^[yY].* ]] ; then
-        echo "Removing \"$pass_file\"";
-        echo rm \"$pass_file\" | sh -x
-    else
-        echo "OK, leaving ${pass} (file is \"$pass_file\") in place."
-    fi
-}
-# this functtion scans the current directory for .sig GnuPG/PGP signatures
-#  and their cooresponding files, and does a gpp/gpg2 --verify on all of them
 
-function gverify
-{
-    verbose=""
-    nargs=$#
-    if [[ "$1" == "-v" ]] ; then
-        verbose="-v"
-        nargs=$((nargs - 1))
-        shift
-    fi
 
-    total=0
-    for f in *.sig ; do 
-        # there are no actual files so it defaults to just using the 
-        # glob
-        fname=$(basename $f .sig)
-        if [[ "$f" == "*.sig" ]] ; then
-            echo "No signature files found!"
-            break
-        fi
-        if [ ! -f "$fname" ]  ; then 
-            echo "Signature [$f] found, but file [$fname] missing.."
-            continue
-        fi
-        echo "Checking $fname.."
-        [ -n "$verbose" ] && echo " Using signature file $f."
-        [ -n "$verbose" ] && echo " + gpg2 --verify $f $fname"
-        gpg2 $verbose --verify $f $fname && echo 
-        total=$((total +1 ))
-    done
-}
+# DISABLED TESTING GPGTools for OSX
+
+#if [ -z $(pgrep gpg-agent) ] ; then 
+#    gpg-agent --daemon --enable-ssh-support --write-env-file "${HOME}/.gpg-agent-info" > ~/sh/gpg-agent.rc; 
+#    . ~/sh/gpg-agent.rc
+#fi

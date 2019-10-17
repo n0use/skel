@@ -16,8 +16,38 @@ PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 _host=$(hostname | awk -F. '{ print $1 }')               
 _date=$(date '+%m-%d-%y-%s')
 
-HISTFILE=~/.history/bash-history-$_
-HISTFILE=~/.history/bash-history-${_host}-${_date}
+_HISTFILE=~/.history/bash-history-${_host}-${_date}
 
+if [ -f "${_HISTFILE}" ] ; then
+    _HISTFILE="${HISTFILE}a$$"
+fi
+
+HISTFILE=${_HISTFILE}
 HISTFILESIZE=10000
 HISTSIZE=10000
+
+function hist () 
+{ 
+    grep_cmd='egrep'
+    grep_flags=''
+    grep_str=''
+
+    if [ ! -d ~/.history/ ]; then
+        echo "Your history files are not setup correctly - ~/.history/ directory missing!";
+        return 1;
+    fi;
+
+    if (( "$#" >= 2 )) ; then
+        grep_flags=$1
+        grep_str=$2
+    elif (( "$#" == 1 )) ; then
+        grep_str=$1
+    else 
+        echo "Usage: hist [-flags] search-pattern";
+        return 1;
+    fi
+
+#    ${grep_cmd} ${grep_flags} ${grep_str} ~/.history/*
+    ls -G -tr ~/.history/bash-history-* | xargs -J % ${grep_cmd} ${grep_flags} ${grep_str} %
+
+}

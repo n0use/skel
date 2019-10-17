@@ -6,12 +6,15 @@ alias tfullscreen='tmux attach-session -t fullscreen'
 alias tlist='echo "Session list [tmux list-session].." && tmux list-session'
 alias lstmux='echo "Session list [tmux list-session].." && tmux list-session'
 
-alias tmux='TERM=tmux tmux -u'
+# dont need this tmux alias no mo' - in fact, it breaks tmux, because of the TERM setting (cant open terminfo db)
+# Fri Oct 19 09:09:05 EDT 2018
+# alias tmux='TERM=tmux tmux -u'
 
 
 function tatt()
 {
-    _tmux=$(which tmux)
+#    _tmux=$(which tmux)
+    _tmux=/usr/local/bin/tmux
     detach=yes
     s="$@"
 
@@ -59,7 +62,8 @@ function tatt()
 
 function tdet()
 {
-    _tmux=$(which tmux)
+#    _tmux=$(which tmux)
+    _tmux=/usr/local/bin/tmux
     s="$*"
 
     if [ -z "${_tmux}" ]; then
